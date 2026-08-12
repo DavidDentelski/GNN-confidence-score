@@ -1,0 +1,19 @@
+\begin{table*}
+\centering
+\begin{tabular}{ll| c c c c c c c c c}
+\toprule
+ & & \multicolumn{9}{c}{Accepted failures at acceptance rate $\kappa$} \\
+Config & Curve & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 \\
+\hline
+\midrule
+$(5, 5)$ & MWPM, ranked by $g_{\rm GNN}$ & 20 & 60 & 146 & 370 & 912 & 2805 & 12508 & 84983 & 1404059 \\
+$(5, 5)$ & GNN, ranked by $g_{\rm MWPM}$ & 74 & 264 & 568 & 1171 & 2486 & 7763 & 28750 & 134608 & 938002 \\
+$(7, 7)$ & MWPM, ranked by $g_{\rm GNN}$ & 22 & 67 & 194 & 508 & 1330 & 4015 & 14210 & 68214 & 999498 \\
+$(7, 7)$ & GNN, ranked by $g_{\rm MWPM}$ & 195 & 630 & 1585 & 2907 & 5182 & 10157 & 23596 & 79619 & 731541 \\
+$(9, 9)$ & MWPM, ranked by $g_{\rm GNN}$ & 250 & 347 & 563 & 1009 & 2045 & 4767 & 13500 & 50703 & 675512 \\
+$(9, 9)$ & GNN, ranked by $g_{\rm MWPM}$ & 103 & 226 & 477 & 873 & 1675 & 3547 & 9041 & 33826 & 414621 \\
+\bottomrule
+\end{tabular}
+\caption{Number of accepted logical failures behind the exchanged-ranking curves of Fig.~2 and Appendix~B, at $p = 0.005$ with $10^8$ shots per configuration. Acceptance-threshold ties are averaged uniformly (fractionally accepted), so the entries are tie-averaged expectations, rounded to integers. The native pairings are tabulated in Table~\ref{counts_table}.}
+\label{crossed_counts_table}
+\end{table*}

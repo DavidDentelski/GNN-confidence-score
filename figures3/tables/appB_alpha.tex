@@ -1,0 +1,17 @@
+\begin{table*}
+\centering
+\begin{tabular}{l| c c c c c c c c |c|c}
+\toprule
+ & $(5, 5)$ & $(5, 7)$ & $(5, 9)$ & $(5, 11)$ & $(7, 7)$ & $(7, 9)$ & $(7, 11)$ & $(9, 9)$ & Pooled & IVW mean \\
+\hline
+\midrule
+MWPM $\alpha$ & 0.864 & 0.855 & 0.847 & 0.839 & 0.837 & 0.832 & 0.827 & 0.825 & 0.843 & 0.842 \\
+MWPM $\chi^2_\nu$ & 239.8 & 380.6 & 493.0 & 634.8 & 95.9 & 133.3 & 183.2 & 40.1 & 1985.9 & -- \\
+\hline
+GNN $\alpha$ & 0.975 & 0.966 & 0.938 & 0.991 & 0.920 & 0.960 & 0.983 & 1.035 & 0.968 & 0.967 \\
+GNN $\chi^2_\nu$ & 4.6 & 14.0 & 44.9 & 14.2 & 1.2 & 12.7 & 8.0 & 5.2 & 69.3 & -- \\
+\bottomrule
+\end{tabular}
+\caption{Calibration slope $\alpha$ from a binomial maximum-likelihood fit over the pre-specified window $g \in [10, 30]$~dB, at $p = 0.005$, per configuration $(d, r)$, for shot-pooled data, and as an inverse-variance-weighted descriptive mean of the per-configuration slopes (the configurations correspond to different trained networks and do not share a single true $\alpha$; the per-configuration values are the primary result). The unscaled statistical ($1\sigma$, Fisher) uncertainties are at most $0.001$ and are omitted; the reduced $\chi^2$ over integer-dB display bins quantifies the goodness of fit and is reported separately. Values of $\chi^2_\nu \gg 1$ indicate that the one-parameter form does not describe the data within statistics.}
+\label{alpha_table}
+\end{table*}

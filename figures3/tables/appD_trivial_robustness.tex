@@ -1,0 +1,20 @@
+\begin{table*}
+\centering
+\begin{tabular}{l|cc|cc|cc}
+\toprule
+Config & trivial fraction & conf.\ (dB) & $\Delta$AUC$_{\rm MWPM}$ & $\Delta$AUC$_{\rm GNN}$ & AUC$^{\rm excl}_{g_{\rm GNN}\to{\rm MWPM}}$ & AUC$^{\rm excl}_{g_{\rm MWPM}\to{\rm MWPM}}$ \\
+\hline
+\midrule
+$(5, 5)$ & $1.4\%$ & 88.22 & $-0.0080$ & $+0.0254$ & 0.9744 & 0.9663 \\
+$(5, 7)$ & $0.26\%$ & 88.22 & $-0.0087$ & $+0.0358$ & 0.9641 & 0.9554 \\
+$(5, 9)$ & $0.05\%$ & 88.22 & $-0.0098$ & $+0.0452$ & 0.9547 & 0.9449 \\
+$(5, 11)$ & $0.0094\%$ & 88.22 & $-0.0096$ & $+0.0537$ & 0.9447 & 0.9351 \\
+$(7, 7)$ & $0.00055\%$ & 125.47 & $+0.0069$ & $+0.0266$ & 0.9706 & 0.9775 \\
+$(7, 9)$ & $1.8 \times 10^{-5}\%$ & 125.47 & $+0.0102$ & $+0.0317$ & 0.9609 & 0.9711 \\
+$(7, 11)$ & $0$ & -- & $+0.0144$ & $+0.0426$ & 0.9505 & 0.9649 \\
+$(9, 9)$ & $0$ & -- & $+0.0149$ & $+0.0254$ & 0.9693 & 0.9842 \\
+\bottomrule
+\end{tabular}
+\caption{Robustness of the discrimination results at $p = 0.005$. Trivial-syndrome shots (bypassing the GNN; assigned hard decision $0$ and, as confidence, the maximal MWPM gap) are identified exactly and characterized; no trivial shot in any configuration carries a logical error. ${\rm AUC}^{\rm excl}$ denotes the tie-aware AUC recomputed with the trivial shots excluded; the two columns show the cross-decoder comparison of the $d = 5$ reversal (both scores ranking MWPM's failures). $\Delta{\rm AUC}_D$ is the own-score minus other-score AUC for decoder $D$ (all shots); the paired DeLong standard errors are below $10^{-4}$ throughout and are omitted. AUC ties receive half credit throughout.}
+\label{robustness_table}
+\end{table*}

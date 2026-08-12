@@ -1,0 +1,18 @@
+\begin{table}
+\centering
+\begin{tabular}{l|cc}
+\toprule
+Fit window (dB) & MWPM $\alpha$ & GNN $\alpha$ \\
+\hline
+\midrule
+$[10, 30]$ (baseline) & 0.825--0.864 & 0.920--1.035 \\
+$[5, 30]$ & 0.826--0.872 (0.008) & 0.920--1.040 (0.005) \\
+$[10, 40]$ & 0.825--0.864 (0.001) & 0.920--1.031 (0.004) \\
+$[5, 40]$ & 0.826--0.871 (0.008) & 0.920--1.036 (0.001) \\
+$[15, 25]$ & 0.827--0.853 (0.011) & 0.918--1.032 (0.003) \\
+full range & 0.827--0.871 (0.009) & 0.920--1.037 (0.002) \\
+\bottomrule
+\end{tabular}
+\caption{Robustness of the fitted calibration slopes to the choice of fit window: for each window, the range of $\alpha$ across the eight configurations, with the largest per-configuration shift relative to the pre-specified window $g \in [10, 30]$~dB of the main text in parentheses (binomial maximum-likelihood fits as in Table~\ref{alpha_table}; ``full range'' uses every populated score bin).}
+\label{window_table}
+\end{table}

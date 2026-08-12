@@ -1,0 +1,17 @@
+\begin{table*}
+\centering
+\begin{tabular}{ll| c c c c c c c c}
+\toprule
+Decoder & Ranked by & $(5, 5)$ & $(5, 7)$ & $(5, 9)$ & $(5, 11)$ & $(7, 7)$ & $(7, 9)$ & $(7, 11)$ & $(9, 9)$ \\
+\hline
+\midrule
+MWPM & $g_{\rm MWPM}$ & 0.9667 & 0.9555 & 0.9449 & 0.9351 & \textbf{0.9775} & \textbf{0.9711} & \textbf{0.9649} & \textbf{0.9842} \\
+MWPM & $g_{\rm GNN}$  & \textbf{0.9747} & \textbf{0.9642} & \textbf{0.9547} & \textbf{0.9447} & 0.9706 & 0.9609 & 0.9505 & 0.9693 \\
+\hline
+GNN  & $g_{\rm GNN}$  & \textbf{0.9785} & \textbf{0.9719} & \textbf{0.9658} & \textbf{0.9598} & \textbf{0.9838} & \textbf{0.9794} & \textbf{0.9749} & \textbf{0.9898} \\
+GNN  & $g_{\rm MWPM}$ & 0.9531 & 0.9361 & 0.9206 & 0.9061 & 0.9572 & 0.9477 & 0.9323 & 0.9644 \\
+\bottomrule
+\end{tabular}
+\caption{Tie-aware AUC of each confidence score for ranking each decoder's logical failures at $p = 0.005$, across code distances $d$ and stabilizer rounds $r$ ($10^8$ shots per configuration; ties receive half credit). For each decoder, bold marks the better-ranking score; paired DeLong standard errors on same-decoder AUC differences are below $10^{-4}$, so all visible differences are statistically resolved. For $d \geq 7$ each decoder is ranked best by its own score; at $d = 5$ the GNN logit ranks both decoders' failures best.}
+\label{auc_table}
+\end{table*}

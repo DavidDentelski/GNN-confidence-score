@@ -1,0 +1,19 @@
+\begin{table*}
+\centering
+\begin{tabular}{ll| c c c c c c c c c}
+\toprule
+ & & \multicolumn{9}{c}{Accepted failures at acceptance rate $\kappa$} \\
+Config & Decoder & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 \\
+\hline
+\midrule
+$(5, 5)$ & MWPM & 70 & 253 & 538 & 1116 & 2380 & 7482 & 28021 & 137994 & 1404059 \\
+$(5, 5)$ & GNN & 20 & 60 & 140 & 342 & 756 & 2013 & 7153 & 41724 & 938002 \\
+$(7, 7)$ & MWPM & 9 & 43 & 172 & 431 & 1063 & 2906 & 9671 & 46229 & 999498 \\
+$(7, 7)$ & GNN & 12 & 27 & 78 & 178 & 423 & 1122 & 3726 & 18162 & 731541 \\
+$(9, 9)$ & MWPM & 1 & 7 & 35 & 118 & 342 & 981 & 3152 & 16272 & 675512 \\
+$(9, 9)$ & GNN & 27 & 33 & 46 & 74 & 139 & 313 & 967 & 4626 & 414621 \\
+\bottomrule
+\end{tabular}
+\caption{Number of accepted logical failures behind each point of Fig.~1(a), at $p = 0.005$ with $10^8$ shots per configuration. Acceptance-threshold ties are averaged uniformly (fractionally accepted), so the entries are tie-averaged expectations, rounded to integers. Points resting on fewer than 20 failures are suppressed in the figure.}
+\label{counts_table}
+\end{table*}

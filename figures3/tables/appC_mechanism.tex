@@ -1,0 +1,18 @@
+\begin{table}
+\centering
+\begin{tabular}{ll|cc}
+\toprule
+ & & \multicolumn{2}{c}{correct shots outranked} \\
+Config & MWPM failures with gap in & by $g_{\rm MWPM}$ & by $g_{\rm GNN}$ \\
+\hline
+\midrule
+$(5, 5)$ & $0$--$5$ dB (589,851 failures) & 0.4\% & 2.3\% \\
+$(5, 5)$ & $30$--$40$ dB (15,157 failures) & 26.2\% & 10.3\% \\
+\hline
+$(9, 9)$ & $0$--$5$ dB (284,049 failures) & 0.2\% & 3.8\% \\
+$(9, 9)$ & $30$--$40$ dB (12,762 failures) & 12.6\% & 3.2\% \\
+\bottomrule
+\end{tabular}
+\caption{Anatomy of the crossed ranking of MWPM's failures at $p = 0.005$: for MWPM failures grouped by their own gap value, the mean fraction of correctly decoded shots that the failure outranks (i.e., that receive a lower confidence than the failure; ties half credit) under each score. The gap is the sharper flag for its near-tied failures; the logit demotes the overconfident matching failures far more effectively at both distances. The balance of the two populations sets the sign of the same-decoder AUC difference in Table~\ref{auc_table}.}
+\label{mechanism_table}
+\end{table}
