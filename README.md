@@ -50,7 +50,8 @@ The decoders themselves are not part of this repository: MWPM decoding uses
 [PyMatching](https://github.com/oscarhiggott/PyMatching), and the GNN decoders
 are the pretrained networks released with M. Lange *et al.*, *Data-driven
 decoding of quantum error correcting codes using graph neural networks*,
-Phys. Rev. Research **7**, 023181 (2025).
+Phys. Rev. Research **7**, 023181 (2025), available at
+[github.com/LangeMoritz/GNN_decoder](https://github.com/LangeMoritz/GNN_decoder).
 
 ## Layout
 
