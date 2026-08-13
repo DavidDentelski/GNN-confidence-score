@@ -195,7 +195,7 @@ def plot_signed_gap_distribution_many(
         },
     }
 
-    xcap_map  = {7: 500, 9: 2000}
+    xcap_map  = {7: 500, 9: 800}
 
     for d, dt in configs:
         x_cap = xcap_map.get(d, None)
