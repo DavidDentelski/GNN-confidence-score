@@ -36,9 +36,7 @@ Requirements: Python ≥ 3.9 with `numpy`, `scipy`, `matplotlib`.
 The retained primary data consist of shot-aligned `delta_mwpm_*.npy` and
 `delta_gnn_*.npy` arrays containing the signed confidence values (dB) of the
 two decoders on the same syndromes, negative on logical failures (~9.6 GB in
-total). They are not included in this repository; they are available upon
-reasonable request, and an archived copy will accompany the published version
-of the paper.
+total). They are not included in this repository and are available upon reasonable request.
 
 For analyses for which the per-shot arrays were retained, placing them in
 `./saved_runs/` and deleting `figures3/derived/` (or setting
