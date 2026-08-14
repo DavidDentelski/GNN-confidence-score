@@ -33,18 +33,22 @@ Requirements: Python ≥ 3.9 with `numpy`, `scipy`, `matplotlib`.
 
 ## Recomputing from the per-shot data
 
-The primary data are two shot-aligned arrays per configuration —
-`delta_mwpm_*.npy` and `delta_gnn_*.npy`, the signed confidences (dB) of each
-decoder on the same syndromes, negative on logical failures (~9.6 GB in
+The retained primary data consist of shot-aligned `delta_mwpm_*.npy` and
+`delta_gnn_*.npy` arrays containing the signed confidence values (dB) of the
+two decoders on the same syndromes, negative on logical failures (~9.6 GB in
 total). They are not included in this repository; they are available upon
 reasonable request, and an archived copy will accompany the published version
 of the paper.
 
-With the arrays placed in `./saved_runs/`, deleting `figures3/derived/` (or
-setting `RECOMPUTE = True` in a script) recomputes every analysis from the
-per-shot level: exact tie-averaged post-selection, midrank AUCs, paired
-bootstrap and DeLong intervals, and binomial maximum-likelihood calibration
-fits.
+For analyses for which the per-shot arrays were retained, placing them in
+`./saved_runs/` and deleting `figures3/derived/` (or setting
+`RECOMPUTE = True` in a script) recomputes the corresponding results directly
+from the shot-level data: exact tie-averaged post-selection, midrank AUCs,
+paired bootstrap and DeLong intervals, and binomial maximum-likelihood
+calibration fits. One exception: the d = 5, p < 0.005 raw arrays used for
+Fig. 1(b) were not retained; the corresponding values of the published figure
+are embedded directly in `make_fig1.py` (`FIG1B_D5`), which falls back to
+them automatically when the arrays are absent.
 
 The decoders themselves are not part of this repository: MWPM decoding uses
 [PyMatching](https://github.com/oscarhiggott/PyMatching), and the GNN decoders
