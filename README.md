@@ -46,7 +46,7 @@ For analyses for which the per-shot arrays were retained, placing them in
 from the shot-level data: exact tie-averaged post-selection, midrank AUCs,
 paired bootstrap and DeLong intervals, and binomial maximum-likelihood
 calibration fits. One exception: the d = 5, p < 0.005 raw arrays used for
-Fig. 1(b) were not retained; the corresponding values of the published figure
+Fig. 1(b) were not retained; the corresponding values used in the published figure
 are embedded directly in `make_fig1.py` (`FIG1B_D5`), which falls back to
 them automatically when the arrays are absent.
 
