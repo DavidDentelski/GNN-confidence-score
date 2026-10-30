@@ -8,8 +8,10 @@ decoder-confidence pairs, all evaluated on the SAME shots:
     GNN         + g_GNN    (logit)                       (delta_gnn_*)
 
 Fig. 1, columns (a)-(c) for d = r = 5, 7, 9; colour = pair:
-  top     post-selected LER vs acceptance rate kappa at p = 0.005, with a strip
+  top     post-selected LER vs acceptance rate kappa at p = 0.005; inset: the ratio
           L_pair / L_GNN with PAIRED 95% bootstrap bands (same shots, tie-averaged);
+  middle  the ratio of selection gains R_pair / R_GNN, R = L(kappa) / L(1), i.e. the
+          second factor of Eq. (4), with paired 95% bands;
   bottom  post-selected LER vs p at kappa = 0.9 (the p-scan of runs.py).
 
 A point is shown when its curve rests on >= 20 accepted failures. Post-selection
@@ -130,13 +132,15 @@ def _block_structure(conf):
 
 def paired_ratio_ci(dm, dg, kappas, n_boot, seed):
     """
-    Paired percentile CI for LER_MWPM(kappa) / LER_GNN(kappa) (native
-    decoder-score pairs) via a multinomial bootstrap over 36 joint
+    Paired percentile CIs for LER_MWPM(kappa) / LER_GNN(kappa) and for the
+    ratio of selection gains R_MWPM(kappa) / R_GNN(kappa), R = L(kappa) / L(1)
+    (native decoder-score pairs), via a multinomial bootstrap over 36 joint
     per-shot categories: (fail_M, fail_G, tie-zone under g_MWPM,
     tie-zone under g_GNN), where the tie-zone is strictly-above /
     inside / strictly-below the threshold tie block. The tie-averaging
     rule of the point estimate is reproduced inside every replicate, so
-    the interval refers to the tie-averaged estimand.
+    the interval refers to the tie-averaged estimand; L(1) of each decoder
+    is resampled in the same replicate. Returns (lo, hi, R_lo, R_hi).
     """
     n = len(dm)
     rng = np.random.default_rng(seed)
@@ -151,7 +155,7 @@ def paired_ratio_ci(dm, dg, kappas, n_boot, seed):
     zm_idx = (idx // 3) % 3
     zg_idx = idx % 3
 
-    lo_list, hi_list = [], []
+    lo_list, hi_list, rlo_list, rhi_list = [], [], [], []
     for k in kappas:
         n_acc = int(np.floor(k * n))
         zones = []
@@ -178,17 +182,26 @@ def paired_ratio_ci(dm, dg, kappas, n_boot, seed):
 
         f_m = acc_fails(fm_mask, zm_idx)
         f_g = acc_fails(fg_mask, zg_idx)
+        # all failures of the replicate (kappa = 1), for the selection-gain ratio R_M / R_G, R = L(kappa) / L(1)
+        n_fail_m = draws[:, fm_mask].sum(axis=1)
+        n_fail_g = draws[:, fg_mask].sum(axis=1)
         with np.errstate(divide="ignore", invalid="ignore"):
             ratios = f_m / f_g
-        ratios = ratios[np.isfinite(ratios)]
+            sel = ratios * n_fail_g / n_fail_m
+        ok = np.isfinite(ratios)
+        ratios, sel = ratios[ok], sel[ok]
         if len(ratios) < n_boot // 2:
             lo_list.append(np.nan)
             hi_list.append(np.nan)
+            rlo_list.append(np.nan)
+            rhi_list.append(np.nan)
         else:
             lo_list.append(float(np.percentile(ratios, 2.5)))
             hi_list.append(float(np.percentile(ratios, 97.5)))
+            rlo_list.append(float(np.percentile(sel, 2.5)))
+            rhi_list.append(float(np.percentile(sel, 97.5)))
         del cat
-    return np.array(lo_list), np.array(hi_list)
+    return np.array(lo_list), np.array(hi_list), np.array(rlo_list), np.array(rhi_list)
 
 
 def ler_at_kappa(delta_db, kappa):
@@ -226,8 +239,9 @@ def compute_1a(d):
     if "gnn" in arrays:
         for n in ("mwpm", "mwpmcorr"):
             if n in arrays:
-                lo, hi = paired_ratio_ci(arrays[n], arrays["gnn"], KAPPA_SHOW, N_BOOT, BOOT_SEED)
-                out["ratio_vs_gnn"][n] = {"kappa": KAPPA_SHOW.tolist(), "lo": lo.tolist(), "hi": hi.tolist()}
+                lo, hi, rlo, rhi = paired_ratio_ci(arrays[n], arrays["gnn"], KAPPA_SHOW, N_BOOT, BOOT_SEED)
+                out["ratio_vs_gnn"][n] = {"kappa": KAPPA_SHOW.tolist(), "lo": lo.tolist(), "hi": hi.tolist(),
+                                          "R_lo": rlo.tolist(), "R_hi": rhi.tolist()}
     return out
 
 
@@ -266,11 +280,25 @@ def _fig1_axes_style(ax):
     ax.tick_params(which="both", direction="in", top=True, right=True)
 
 
+def _ratio_axes(ax, ticks, labelsize=None):
+    """Logarithmic ratio axis with plain tick labels (0.2, 1, 5, ...)."""
+    _fig1_axes_style(ax)
+    ax.yaxis.set_major_locator(FixedLocator(ticks))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
+    ax.yaxis.set_minor_formatter(NullFormatter())
+    if labelsize:
+        ax.tick_params(labelsize=labelsize)
+
+
+INSET = [0.15, 0.53, 0.40, 0.36]   # L_pair / L_GNN inset in the top panels (axes fraction)
+
+
 def plot_fig1(results, res_1b):
-    """Panels (a)-(c), one column per distance: L(kappa) with an L_pair / L_GNN strip, and L(p) below."""
+    """Panels (a)-(c), one column per distance: L(kappa) with an L_pair / L_GNN inset, the ratio of selection
+    gains R_pair / R_GNN (R = L(kappa) / L(1)) below it, and L(p) at the bottom."""
     with plt.rc_context(FIG1_RC):
-        fig = plt.figure(figsize=(7.1, 5.6))
-        gs = fig.add_gridspec(4, len(results), height_ratios=[3, 1.1, 0.55, 3], hspace=0.07, wspace=0.12)
+        fig = plt.figure(figsize=(7.1, 6.2))
+        gs = fig.add_gridspec(4, len(results), height_ratios=[3.4, 1.25, 0.55, 3], hspace=0.07, wspace=0.12)
         top = [fig.add_subplot(gs[0, c]) for c in range(len(results))]
         rat = [fig.add_subplot(gs[1, c], sharex=top[c]) for c in range(len(results))]
         bot = [fig.add_subplot(gs[3, c]) for c in range(len(results))]
@@ -286,17 +314,28 @@ def plot_fig1(results, res_1b):
             ax.set_title(rf"$\mathbf{{({'abc'[c]})}}$   $d = r = {d}$", loc="left")
             ax.set_xlim(0.15, 1.05)
             ax.tick_params(labelbottom=False)
+            ins = ax.inset_axes(INSET)
             for n_, rr in res["ratio_vs_gnn"].items():
                 style = PAIRS[n_][2]
                 ler_n, nf_n, _ = at(res, n_, KAPPA_SHOW)
                 ler_g, nf_g, _ = at(res, "gnn", KAPPA_SHOW)
                 ok = (nf_n >= MIN_FAIL) & (nf_g >= MIN_FAIL)
-                lo, hi = np.array(rr["lo"], dtype=float), np.array(rr["hi"], dtype=float)
-                band = ok & np.isfinite(lo) & np.isfinite(hi)
-                axr.fill_between(KAPPA_SHOW[band], lo[band], hi[band], color=style["color"], alpha=0.2, linewidth=0)
-                axr.plot(KAPPA_SHOW[ok], (ler_n / ler_g)[ok], markersize=2.8, linewidth=1.0, **style)
+                ratio = ler_n / ler_g
+                for a, y, key, ms, lw in ((ins, ratio, "", 1.8, 0.8),                 # L_pair / L_GNN
+                                          (axr, ratio / ratio[-1], "R_", 2.8, 1.0)):   # R_pair / R_GNN
+                    lo, hi = np.array(rr[key + "lo"], dtype=float), np.array(rr[key + "hi"], dtype=float)
+                    band = ok & np.isfinite(lo) & np.isfinite(hi)
+                    a.fill_between(KAPPA_SHOW[band], lo[band], hi[band], color=style["color"], alpha=0.2, linewidth=0)
+                    a.plot(KAPPA_SHOW[ok], y[ok], markersize=ms, linewidth=lw, **style)
+            ins.axhline(1.0, color="black", linewidth=0.6)
+            _ratio_axes(ins, [0.2, 1, 5], labelsize=5.5)
+            ins.set_ylim(0.12, 8)
+            ins.set_xlim(0.15, 1.05)
+            ins.xaxis.set_major_locator(FixedLocator([0.2, 0.6, 1.0]))
+            ins.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
+            ins.set_title(r"$L_{\rm pair}/L_{\rm GNN}$", fontsize=6, pad=2)
             axr.axhline(1.0, color="black", linewidth=0.7)
-            _fig1_axes_style(axr)
+            _ratio_axes(axr, [0.2, 0.5, 1, 2, 5])
             axr.set_ylim(0.12, 8)
             axr.set_xlabel(r"Acceptance rate $\kappa$")
             rows = sorted([r for r in res_1b["rows"] if r["d"] == d], key=lambda r: r["p"])
@@ -319,18 +358,14 @@ def plot_fig1(results, res_1b):
                 a.set_ylim(lo, hi)
                 if i:
                     a.tick_params(labelleft=False)
-        for a in rat:
-            a.yaxis.set_major_locator(FixedLocator([0.2, 0.5, 1, 2, 5]))
-            a.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
-            a.yaxis.set_minor_formatter(NullFormatter())
         top[0].set_ylabel(rf"$L(\kappa)$ at $p = {P_MAIN}$")
-        rat[0].set_ylabel(r"$L_{\rm pair}/L_{\rm GNN}$")
+        rat[0].set_ylabel(r"$R_{\rm pair}/R_{\rm GNN}$")
         bot[0].set_ylabel(rf"$L$ at $\kappa = {KAPPA_1B}$")
         fig.align_ylabels([top[0], rat[0], bot[0]])
         handles = [Line2D([], [], markersize=FIG1_MS + 0.6, linewidth=FIG1_LW, **PAIRS[n][2]) for n in PAIRS]
         fig.legend(handles, [PAIRS[n][1] for n in PAIRS], loc="upper center", ncol=3, frameon=False,
                    bbox_to_anchor=(0.5, 1.0))
-        fig.subplots_adjust(top=0.9)
+        fig.subplots_adjust(top=0.91)
         for ext in ("pdf", "png"):
             fig.savefig(os.path.join(FIG_DIR, f"fig1_postselection.{ext}"), dpi=300)
         plt.close(fig)
@@ -426,7 +461,7 @@ if __name__ == "__main__":
     t0 = time.perf_counter()
     results = []
     for d in DISTANCES:
-        key = [*PAIRS, runs.tag(d, d)]
+        key = [*PAIRS, runs.tag(d, d), "with_selection_ratio_ci"]
         results.append(cached(f"fig1a_d{d}", lambda d=d: compute_1a(d), key=key))
     key_1b = [f"d{d}_p{p}_shots{shots}" for d, p, shots in runs_1b()]
     res_1b = cached("fig1b", compute_1b, key=key_1b)
