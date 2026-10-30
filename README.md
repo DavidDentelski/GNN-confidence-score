@@ -128,5 +128,6 @@ Python 3.14.9 with the versions pinned in `requirements.txt` (rebuilding) and
 
 MIT (`LICENSE`). The GNN architecture in `gnn_decoder.py` is copied from
 Lange et al. (MIT) and the optional patch modifies PyMatching (Apache 2.0); see
-`THIRD_PARTY_NOTICES.md`. The code of the version submitted in August 2026 is
-in the git history (tag `2026-08-resubmission`).
+`THIRD_PARTY_NOTICES.md`. Tagged versions: `v1.0-resubmission` (resubmission
+of August 2026) and `v2.0-resubmission` (resubmission of October 2026, this
+code).
