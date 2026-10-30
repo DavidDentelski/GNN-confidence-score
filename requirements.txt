@@ -1,0 +1,6 @@
+# Rebuilding every figure, table and number of the paper (make_all.py) from the
+# cached derived data in build/, or from the per-shot arrays (Zenodo).
+# Versions used for the paper (Python 3.14.9):
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2

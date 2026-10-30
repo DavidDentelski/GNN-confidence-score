@@ -1,65 +1,132 @@
-# Neural network decoder confidence as a learned proxy for the logical gap
+# Soft information from neural-network logits and correlation-aware matching gaps
 
-Analysis code and derived data for the paper *"Neural network decoder confidence
-as a learned proxy for the logical gap"* (D. Dentelski).
+Code and derived data for the paper *"Soft information from neural-network
+logits and correlation-aware matching gaps"* (D. Dentelski).
 
-The study compares, on the same 10⁸ sampled syndromes per configuration of a
-rotated-surface-code memory experiment, the confidence score of a pretrained
-graph-neural-network decoder (its pre-sigmoid logit) with the complementary gap
-of a minimum-weight-perfect-matching (MWPM) decoder — as rankings for
-post-selection, under exchange between the decoders, and as calibrated
-estimates of the logical failure probability.
+The paper compares three confidence scores on the same sampled syndromes of
+rotated-surface-code memory experiments under uniform circuit-level noise
+(10<sup>8</sup> shots per configuration): the logit of a pretrained graph
+neural-network (GNN) decoder [Lange et al., Phys. Rev. Research **7**, 023181
+(2025)], and the complementary gaps of uncorrelated and correlation-aware
+minimum-weight perfect matching (MWPM). It evaluates them for post-selection,
+under exchange between the decoders, against the exact posterior at
+(d, r) = (3, 3), and as calibrated estimates of the logical failure probability.
 
-## Reproducing the figures and tables
+## Reproducing the paper
 
-Every figure and table of the paper regenerates from the derived data included
-in `figures3/derived/` — no raw data or GPU required:
+Every figure, every table and every number quoted in the text is rebuilt by
 
 ```
-python make_fig1.py                  # Fig. 1a/1b + failure-counts tables (App. A)
-python make_fig2_crossed.py          # Fig. 2a/2b, App. B crossed panel, Tables (AUC, crossed counts)
-python make_fig3.py                  # Fig. 3a/3b + App. B distribution panel
-python make_fig4.py                  # Fig. 4a/4b, App. B calibration figs + alpha table, App. D window table + alpha-vs-p
-python make_appendixC.py             # App. C score-pairing histogram
-python make_appendixD_robustness.py  # App. D robustness table + App. C mechanism table
+pip install -r requirements.txt
+python make_all.py
 ```
 
-Outputs are written to `figures3/` (PDF + PNG) and `figures3/tables/` (LaTeX).
-Each script also prints the numerical values quoted in the paper (paired
-confidence intervals, decomposition factors, exceedance statistics, fit
-diagnostics).
+which takes a few minutes and needs neither the raw data nor a GPU: all steps
+start from the cached derived data in `build/**/derived/` (JSON). The results
+are written under the paper's numbering:
 
-Requirements: Python ≥ 3.9 with `numpy`, `scipy`, `matplotlib`.
+| Paper | Output | Scripts |
+|---|---|---|
+| Fig. 1 | `figures/fig1_postselection.pdf` | `make_postselection.py` |
+| Fig. 2 | `figures/fig2_exchange.pdf` | `make_exchange.py`, `make_combined_figures.py` |
+| Fig. 3 | `figures/fig3_distribution.pdf` | `make_distribution.py` |
+| Fig. 4 | `figures/fig4_exact_d3.pdf` | `make_exact_d3.py` |
+| Fig. 5 | `figures/fig5_calibration.pdf` | `make_calibration.py`, `make_combined_figures.py` |
+| Fig. 6 | `figures/fig6_calibration_d5_d7.pdf` | `make_calibration.py`, `make_combined_figures.py` |
+| Fig. 7 | `figures/fig7_score_pairing.pdf` | `make_score_pairing.py` |
+| Fig. 8 | `figures/fig8_local_slopes.pdf` | `make_calibration_extras.py` |
+| Fig. 9 | `figures/fig9_alpha_vs_p.pdf` | `make_calibration.py`, `make_combined_figures.py` |
+| Table I | `tables/table1_auc.tex` | `make_exchange.py`, `make_robustness.py`, `make_tables.py` |
+| Table II | `tables/table2_exact_d3.tex` | `make_exact_d3.py` |
+| Table III | `tables/table3_failure_counts.tex` | `make_postselection.py` |
+| Table IV | `tables/table4_exchanged_counts.tex` | `make_exchange.py` |
+| Table V | `tables/table5_calibration.tex` | `make_calibration.py`, `make_calibration_extras.py`, `make_tables.py` |
+| Table VI | `tables/table6_mechanism.tex` | `make_robustness.py` |
+| Table VII | `tables/table7_trivial_syndromes.tex` | `make_robustness.py` |
+| Table VIII | `tables/table8_fit_window.tex` | `make_calibration.py`, `make_calibration_extras.py`, `make_tables.py` |
+| Numbers in the text | `numbers/text_numbers.md` | `make_text_numbers.py`, `compare_gap_constructions.py` (App. B) |
 
-## Recomputing from the per-shot data
+The tables are the `tabular` environments of the paper. Each step logs to
+`build/logs/`, and `python make_all.py --steps ...` reruns selected steps.
 
-The retained primary data consist of shot-aligned `delta_mwpm_*.npy` and
-`delta_gnn_*.npy` arrays containing the signed confidence values (dB) of the
-two decoders on the same syndromes, negative on logical failures (~9.6 GB in
-total). They are not included in this repository and are available upon reasonable request.
+## Three levels of reproduction
 
-For analyses for which the per-shot arrays were retained, placing them in
-`./saved_runs/` and deleting `figures3/derived/` (or setting
-`RECOMPUTE = True` in a script) recomputes the corresponding results directly
-from the shot-level data: exact tie-averaged post-selection, midrank AUCs,
-paired bootstrap and DeLong intervals, and binomial maximum-likelihood
-calibration fits. One exception: the d = 5, p < 0.005 raw arrays used for
-Fig. 1(b) were not retained; the corresponding values used in the published figure
-are embedded directly in `make_fig1.py` (`FIG1B_D5`), which falls back to
-them automatically when the arrays are absent.
+1. **From the derived data** (above): binned counts, curves and fit inputs
+   cached in `build/**/derived/`.
+2. **From the per-shot data.** The signed confidences of the three decoders on
+   all shots of the 20 runs (24 GB) are available on Zenodo,
+   [doi:10.5281/zenodo.23817170](https://doi.org/10.5281/zenodo.23817170).
+   Place them in `data/` (or point the environment
+   variable `GNN_CONFIDENCE_DATA` to them), delete `build/` and run
+   `python make_all.py`: every cached result is recomputed from the arrays
+   (~2 h on 16 threads). Two steps decode fresh shots instead and also need
+   `requirements-data.txt`: the comparison of correlated-gap constructions of
+   Appendix B (`compare_gap_constructions.py`, ~1.5 h) and the exact-posterior
+   benchmark at d = 3 (`make_exact_d3.py`, ~1 h).
+3. **From scratch.** `generate_all_data.py` regenerates the 20 runs (Linux only,
+   `requirements-data.txt`, GNN checkpoints from `python fetch_gnn_models.py`;
+   optionally the PyMatching patch in `pymatching_patch/` for a 14-18x faster
+   correlated gap). The GNN runs on CPU and dominates the cost (days in total).
 
-The decoders themselves are not part of this repository: MWPM decoding uses
-[PyMatching](https://github.com/oscarhiggott/PyMatching), and the GNN decoders
-are the pretrained networks released with M. Lange *et al.*, *Data-driven
-decoding of quantum error correcting codes using graph neural networks*,
-Phys. Rev. Research **7**, 023181 (2025), available at
-[github.com/LangeMoritz/GNN_decoder](https://github.com/LangeMoritz/GNN_decoder).
+## Data
+
+`runs.py` lists the 20 runs: (d, r) = (5, 5), (5, 7), (5, 9), (5, 11), (7, 7),
+(7, 9), (7, 11), (9, 9) at p = 5 x 10<sup>-3</sup>, and d = r = 5, 7, 9 at
+p = 3, 3.5, 4, 4.5 x 10<sup>-3</sup>, each with 10<sup>8</sup> shots. Per run:
+
+- `delta_{decoder}_d{d}_dt{r}_p{p}_shots{N}.npy` for decoder `mwpm`
+  (MWPM<sub>uncorr</sub>), `mwpmcorr` (MWPM<sub>corr</sub>) and `gnn`: the signed
+  confidence Delta in dB of every shot (float32), positive where the decoder is
+  correct, |Delta| = confidence;
+- `run_d{d}_dt{r}_p{p}_shots{N}.json`: provenance and consistency checks.
+
+The shots of a run are drawn from one stim detector sampler seeded with
+42 + d + r in chunks of 10,000 shots, so every array of a run refers to the
+same shots, and a seeded stream is reproduced exactly on Linux with stim 1.16.0
+(not on other platforms). Some GNN arrays come from the original GPU inference;
+recomputing them on CPU with `gnn_decoder.py` gave identical decisions and logits
+within 1.4 x 10<sup>-3</sup> dB on the spot-checked shots (recorded in the run
+JSONs). The matching arrays are reproduced bit for bit. A wrongly decided exact tie (gap 0, decision L = 0) is stored as -0.0 and
+counted as a failure (`np.signbit`).
 
 ## Layout
 
 ```
-make_fig*.py, make_appendix*.py   analysis / figure scripts (self-contained)
-figures3/                         figures as in the paper (PDF + PNG)
-figures3/tables/                  LaTeX tables as in the paper
-figures3/derived/                 cached derived data (JSON) behind every figure and table
+runs.py                      the 20 runs, data and model paths
+make_all.py                  builds everything (steps below), collects figures/, tables/, numbers/
+make_postselection.py        Fig. 1, Table III
+make_exchange.py             exchanged scores: Fig. 2 data, Tables I and IV
+make_distribution.py         Fig. 3
+make_exact_d3.py             exact posterior at d = 3: Fig. 4, Table II
+make_calibration.py          calibration fits: Figs. 5, 6, 9 data, Tables V and VIII
+make_calibration_extras.py   Fig. 8, two-parameter fits, goodness of fit per window
+make_score_pairing.py        Fig. 7
+make_robustness.py           Tables VI and VII, paired AUC differences
+make_combined_figures.py     Figs. 2, 5, 6, 9 (both MWPM variants)
+make_tables.py               Tables I, V, VIII
+make_text_numbers.py         numbers quoted in the text
+compare_gap_constructions.py Appendix B: shared-graph vs per-sector correlated gap
+figure_style.py              colours and markers shared by all figures
+generate_shot_data.py        per-shot data of one run (three decoders, same shots)
+generate_all_data.py         all 20 runs
+post_selection.py            MWPM complementary gap (uncorrelated)
+correlated_gap.py            correlation-aware complementary gap on a shared reweighted graph
+validate_correlated_gap.py   checks of correlated_gap.py against PyMatching's correlated decoder
+gnn_decoder.py               the pretrained GNN of Lange et al. (per-shot logits)
+fetch_gnn_models.py          downloads the GNN checkpoints
+pymatching_patch/            optional C++ implementation of the correlated gap
+build/                       cached derived data (tracked); logs and intermediate outputs (not tracked)
+figures/  tables/  numbers/  the paper's figures, tables and text numbers
 ```
+
+## Environment
+
+Python 3.14.9 with the versions pinned in `requirements.txt` (rebuilding) and
+`requirements-data.txt` (data generation; Linux, used in WSL2).
+
+## License
+
+MIT (`LICENSE`). The GNN architecture in `gnn_decoder.py` is copied from
+Lange et al. (MIT) and the optional patch modifies PyMatching (Apache 2.0); see
+`THIRD_PARTY_NOTICES.md`. The code of the version submitted in August 2026 is
+in the git history (tag `2026-08-resubmission`).

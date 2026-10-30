@@ -1,3 +1,13 @@
 __pycache__/
 *.pyc
-saved_runs/
+
+# per-shot arrays (Zenodo) and GNN checkpoints (fetch_gnn_models.py)
+data/
+gnn_models/
+
+# build/: only the cached derived data is tracked
+build/**
+!build/**/
+!build/**/derived/*.json
+!build/gap_constructions/*.json
+!build/text/text_numbers.json

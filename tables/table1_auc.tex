@@ -1,0 +1,17 @@
+\begin{tabular}{ll|cccccccc}
+\toprule
+Decoder & Ranked by & $(5, 5)$ & $(5, 7)$ & $(5, 9)$ & $(5, 11)$ & $(7, 7)$ & $(7, 9)$ & $(7, 11)$ & $(9, 9)$ \\
+\hline
+\midrule
+MWPM$_{\rm corr}$ & $g_{\rm corr}$ & 0.9753 & \textbf{0.9680} & \textbf{0.9610} & \textbf{0.9545} & \textbf{0.9861} & \textbf{0.9826} & \textbf{0.9793} & \textbf{0.9922} \\
+MWPM$_{\rm corr}$ & $|g_{\rm GNN}|$ & \textbf{0.9767} & 0.9679 & 0.9600 & 0.9519 & 0.9743 & 0.9663 & 0.9582 & 0.9799 \\
+MWPM$_{\rm corr}$ & $\pm g_{\rm GNN}$ (signed) & 0.9826 & 0.9774 & 0.9725 & 0.9678 & 0.9844 & 0.9803 & 0.9753 & 0.9904 \\
+\hline
+GNN & $g_{\rm GNN}$ & \textbf{0.9785} & \textbf{0.9719} & \textbf{0.9658} & \textbf{0.9598} & \textbf{0.9838} & \textbf{0.9794} & \textbf{0.9749} & \textbf{0.9898} \\
+GNN & $|g_{\rm corr}|$ & 0.9692 & 0.9592 & 0.9499 & 0.9407 & 0.9691 & 0.9636 & 0.9513 & 0.9763 \\
+GNN & $\pm g_{\rm corr}$ (signed) & 0.9733 & 0.9665 & 0.9598 & 0.9537 & 0.9904 & 0.9883 & 0.9871 & 0.9953 \\
+\hline
+MWPM$_{\rm uncorr}$ & $g_{\rm uncorr}$ & 0.9668 & 0.9557 & 0.9452 & 0.9353 & \textbf{0.9775} & \textbf{0.9711} & \textbf{0.9650} & \textbf{0.9842} \\
+MWPM$_{\rm uncorr}$ & $|g_{\rm GNN}|$ & \textbf{0.9747} & \textbf{0.9642} & \textbf{0.9547} & \textbf{0.9447} & 0.9706 & 0.9609 & 0.9505 & 0.9693 \\
+\bottomrule
+\end{tabular}

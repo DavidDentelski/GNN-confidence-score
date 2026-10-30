@@ -1,0 +1,8 @@
+# Generating the per-shot data (generate_all_data.py, generate_shot_data.py,
+# make_exact_d3.py, compare_gap_constructions.py), in addition to requirements.txt.
+# Linux only: seeded stim shot streams are reproduced only on the same platform.
+# Versions used for the paper (Python 3.14.9):
+stim==1.16.0
+pymatching==2.4.0          # optionally patched for a 14-18x faster correlated gap: pymatching_patch/
+torch==2.14.1              # CPU build is sufficient
+torch_geometric==2.8.1
