@@ -22,8 +22,8 @@ factors and pair ratios at kappa = 0.9 (Sec. III A), the decision disagreement o
 configuration and the AUC recovered by the signed exchange (Sec. III B, App. D), the
 size of the d = 3 model and the KL reduction (Sec. III C, App. F), the log-loss and
 calibration-slope statements (Sec. III D, App. C), the comparison of correlated-gap
-constructions (App. B), the rank correlation (App. D), the local slopes and alpha vs p
-(App. E).
+constructions (App. B), the rank correlation and the GNN's high-confidence failures
+(App. D), the local slopes and alpha vs p (App. E).
 
 Outputs (in --out): text_numbers.json (cache of the array-based part, plus all values) and text_numbers.md.
 """
@@ -191,6 +191,27 @@ def derived_numbers():
     # App. D: rank correlation of the two scores at (9, 9)
     num["spearman_rho_d9"] = cached_result("mwpmcorr", "derived", "pairing_d9_dt9.json")["spearman_rho"]
 
+    # App. D: the GNN's high-confidence failures behind its deep-cut floor at (9, 9)
+    hc = cached_result("high_confidence", "derived", "high_confidence_arrays.json")
+    sy = cached_result("high_confidence", "derived", "high_confidence_syndromes.json")
+    c9, deep = hc["configs"]["9,9"], hc["deep_failures_9_9"]
+    top = [x["g_gnn"] for x in deep if x["g_gnn"] >= c9["gnn"]["0.05"]["threshold_db"]]
+    med = lambda g, k: sy["comparison"][g][k]["median"]
+    num["high_confidence_d9"] = {
+        "gnn_failures_kappa_0.4": len(deep), "gnn_failures_kappa_0.2": c9["gnn"]["0.2"]["failures"],
+        "predicted_kappa_0.2": c9["gnn"]["0.2"]["expected"], "in_top_5pct": len(top),
+        "top_5pct_logit_db": [min(top), max(top)],
+        "corr_fails": sum(x["corr_fails"] for x in deep),
+        "both_matching_fail": sum(x["corr_fails"] and x["uncorr_fails"] for x in deep),
+        "g_corr_median_db": float(np.median([x["g_corr"] for x in deep])),
+        "corr_threshold_kappa_0.4_db": c9["mwpmcorr"]["0.4"]["threshold_db"],
+        "detection_events_median": {g: med(g, "n_events") for g in sy["comparison"]},
+        "min_matching_weight_median_nats": {g: med(g, "min_matching_weight_nats") for g in sy["comparison"]}}
+    num["gnn_deep_cut"] = {c: {"observed_kappa_0.1": r["gnn"]["0.1"]["failures"],
+                               "predicted_kappa_0.1": r["gnn"]["0.1"]["expected"],
+                               "L0.2_over_L0.4": r["gnn"]["0.2"]["ler"] / r["gnn"]["0.4"]["ler"]}
+                           for c, r in hc["configs"].items()}
+
     # App. E: local slopes (Fig. 8) and alpha vs p (Fig. 9)
     tables = os.path.join(runs.BUILD_DIR, "mwpmcorr", "tables")
     head, rows = read_csv_rows(os.path.join(tables, "appD_local_slopes.csv"))
@@ -330,6 +351,21 @@ def main():
                f"{n} {v:.2f}" for n, v in num["logloss_rescaling_gain_max_mbit"].items())]
     md += ["", "## Appendix D", "", f"- Spearman rank correlation of g_corr and g_GNN at (9, 9): {num['spearman_rho_d9']:.4f}",
            "- tails and shared failures: Sec. III B table above"]
+    h = num["high_confidence_d9"]
+    md += [f"- (9, 9), GNN failures accepted at kappa <= 0.4: {h['gnn_failures_kappa_0.4']}; at kappa = 0.2: "
+           f"{h['gnn_failures_kappa_0.2']:.0f}, predicted by the GNN's calibration (Eq. (5), alpha of Table V): "
+           f"{h['predicted_kappa_0.2']:.2f}; among the 5% most confident shots: {h['in_top_5pct']}, logits "
+           f"{h['top_5pct_logit_db'][0]:.1f}-{h['top_5pct_logit_db'][1]:.1f} dB",
+           f"- of these {h['gnn_failures_kappa_0.4']}: MWPM_corr fails on {h['corr_fails']} (both matching decoders on "
+           f"{h['both_matching_fail']}); median g_corr {h['g_corr_median_db']:.1f} dB, below the MWPM_corr threshold at "
+           f"kappa = 0.4 ({h['corr_threshold_kappa_0.4_db']:.1f} dB)",
+           "- median number of detection events: " + ", ".join(f"{g} {v:.0f}" for g, v in h["detection_events_median"].items())
+           + "; median minimum matching weight (nats): " + ", ".join(
+               f"{g} {v:.0f}" for g, v in h["min_matching_weight_median_nats"].items())
+           + " (groups and all features: build/high_confidence/high_confidence_failures.md)",
+           "- GNN failures accepted at kappa = 0.1, observed / predicted: " + ", ".join(
+               f"({c}) {v['observed_kappa_0.1']:.0f} / {v['predicted_kappa_0.1']:.1f}" for c, v in num["gnn_deep_cut"].items()),
+           "- GNN L(0.2)/L(0.4): " + ", ".join(f"({c}) {v['L0.2_over_L0.4']:.2f}" for c, v in num["gnn_deep_cut"].items())]
     md += ["", "## Appendix E: local slopes (Fig. 8) and alpha vs p (Fig. 9)", "",
            f"- largest Fisher standard error of a local slope: {num['local_slopes_sigma_max']:.4f}"]
     for k, v in num["local_slopes"].items():

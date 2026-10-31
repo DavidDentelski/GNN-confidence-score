@@ -604,6 +604,74 @@
    "offset_db_max": 0.2223996686490598
   },
   "spearman_rho_d9": 0.7338441508048983,
+  "high_confidence_d9": {
+   "gnn_failures_kappa_0.4": 46,
+   "gnn_failures_kappa_0.2": 27.0,
+   "predicted_kappa_0.2": 0.878854573781372,
+   "in_top_5pct": 15,
+   "top_5pct_logit_db": [
+    77.61266326904297,
+    240.186279296875
+   ],
+   "corr_fails": 35,
+   "both_matching_fail": 34,
+   "g_corr_median_db": 36.941267013549805,
+   "corr_threshold_kappa_0.4_db": 67.23888397216797,
+   "detection_events_median": {
+    "deep": 64.0,
+    "hi_correct": 49.0,
+    "mid_fail": 62.0,
+    "random": 56.0
+   },
+   "min_matching_weight_median_nats": {
+    "deep": 158.8167117285499,
+    "hi_correct": 119.84131122152793,
+    "mid_fail": 156.4016121262893,
+    "random": 137.6336018276607
+   }
+  },
+  "gnn_deep_cut": {
+   "5,5": {
+    "observed_kappa_0.1": 3.0,
+    "predicted_kappa_0.1": 1.18477310596623,
+    "L0.2_over_L0.4": 0.2857142857142857
+   },
+   "5,7": {
+    "observed_kappa_0.1": 18.0,
+    "predicted_kappa_0.1": 1.5704318288411594,
+    "L0.2_over_L0.4": 0.34120734908136485
+   },
+   "5,9": {
+    "observed_kappa_0.1": 36.0,
+    "predicted_kappa_0.1": 17.776798623792722,
+    "L0.2_over_L0.4": 0.31095406360424027
+   },
+   "5,11": {
+    "observed_kappa_0.1": 78.0,
+    "predicted_kappa_0.1": 14.51329150722738,
+    "L0.2_over_L0.4": 0.3118210862619808
+   },
+   "7,7": {
+    "observed_kappa_0.1": 3.0,
+    "predicted_kappa_0.1": 0.7584720906587428,
+    "L0.2_over_L0.4": 0.3076923076923077
+   },
+   "7,9": {
+    "observed_kappa_0.1": 11.0,
+    "predicted_kappa_0.1": 1.9476466170856988,
+    "L0.2_over_L0.4": 0.30392156862745096
+   },
+   "7,11": {
+    "observed_kappa_0.1": 17.0,
+    "predicted_kappa_0.1": 4.577364522178199,
+    "L0.2_over_L0.4": 0.35858585858585856
+   },
+   "9,9": {
+    "observed_kappa_0.1": 16.0,
+    "predicted_kappa_0.1": 0.141290347927706,
+    "L0.2_over_L0.4": 1.1739130434782608
+   }
+  },
   "local_slopes": {
    "MWPM 5,5": {
     "0-5": 0.9841,

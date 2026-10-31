@@ -42,6 +42,7 @@ STEPS = [  # (step, script, variants: None = run once)
     ("robustness", "make_robustness.py", VARIANTS),             # Tables VI and VII, Table I bold rule
     ("combined", "make_combined_figures.py", None),             # Figs. 2, 5, 6, 9
     ("exact_d3", "make_exact_d3.py", None),                     # Fig. 4, Table II
+    ("high_confidence", "make_high_confidence_failures.py", None),   # App. D: the GNN's deep-cut failures
     ("tables", "make_tables.py", None),                         # Tables I, V, VIII
     ("text", "make_text_numbers.py", None),                     # numbers quoted in the text
     ("gap_constructions", "compare_gap_constructions.py", None),   # Appendix B
@@ -50,6 +51,7 @@ STEP_NAMES = [s for s, _, _ in STEPS] + ["collect"]
 ARGS = {"postselection": ["--out", os.path.join(BUILD, "fig1")],
         "combined": ["--build", BUILD, "--out", os.path.join(BUILD, "combined")],
         "exact_d3": ["--out", os.path.join(BUILD, "exact_d3")],
+        "high_confidence": ["--out", os.path.join(BUILD, "high_confidence")],
         "tables": ["--build", BUILD],
         "text": ["--out", os.path.join(BUILD, "text")],
         "gap_constructions": ["--out", os.path.join(BUILD, "gap_constructions")]}

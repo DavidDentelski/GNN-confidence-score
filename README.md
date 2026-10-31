@@ -44,7 +44,7 @@ are written under the paper's numbering:
 | Table VI | `tables/table6_mechanism.tex` | `make_robustness.py` |
 | Table VII | `tables/table7_trivial_syndromes.tex` | `make_robustness.py` |
 | Table VIII | `tables/table8_fit_window.tex` | `make_calibration.py`, `make_calibration_extras.py`, `make_tables.py` |
-| Numbers in the text | `numbers/text_numbers.md` | `make_text_numbers.py`, `compare_gap_constructions.py` (App. B) |
+| Numbers in the text | `numbers/text_numbers.md` | `make_text_numbers.py`, `compare_gap_constructions.py` (App. B), `make_high_confidence_failures.py` (App. D) |
 
 The tables are the `tabular` environments of the paper. Each step logs to
 `build/logs/`, and `python make_all.py --steps ...` reruns selected steps.
@@ -62,7 +62,10 @@ The tables are the `tabular` environments of the paper. Each step logs to
    (~2 h on 16 threads). Two steps decode fresh shots instead and also need
    `requirements-data.txt`: the comparison of correlated-gap constructions of
    Appendix B (`compare_gap_constructions.py`, ~1.5 h) and the exact-posterior
-   benchmark at d = 3 (`make_exact_d3.py`, ~1 h).
+   benchmark at d = 3 (`make_exact_d3.py`, ~1 h). The syndrome features of the
+   GNN's high-confidence failures (Appendix D, `make_high_confidence_failures.py`)
+   regenerate selected (9, 9) shots from the seeded stream, so they need Linux,
+   `requirements-data.txt` and the GNN checkpoints (~10 min).
 3. **From scratch.** `generate_all_data.py` regenerates the 20 runs (Linux only,
    `requirements-data.txt`, GNN checkpoints from `python fetch_gnn_models.py`;
    optionally the PyMatching patch in `pymatching_patch/` for a 14-18x faster
@@ -102,6 +105,7 @@ make_calibration.py          calibration fits: Figs. 5, 6, 9 data, Tables V and 
 make_calibration_extras.py   Fig. 8, two-parameter fits, goodness of fit per window
 make_score_pairing.py        Fig. 7
 make_robustness.py           Tables VI and VII, paired AUC differences
+make_high_confidence_failures.py  Appendix D: the GNN's high-confidence failures at deep cuts
 make_combined_figures.py     Figs. 2, 5, 6, 9 (both MWPM variants)
 make_tables.py               Tables I, V, VIII
 make_text_numbers.py         numbers quoted in the text

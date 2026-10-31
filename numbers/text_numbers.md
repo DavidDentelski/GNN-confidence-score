@@ -107,6 +107,11 @@ Slopes d ln L / d ln p (weighted fit over the p-scan):
 
 - Spearman rank correlation of g_corr and g_GNN at (9, 9): 0.7338
 - tails and shared failures: Sec. III B table above
+- (9, 9), GNN failures accepted at kappa <= 0.4: 46; at kappa = 0.2: 27, predicted by the GNN's calibration (Eq. (5), alpha of Table V): 0.88; among the 5% most confident shots: 15, logits 77.6-240.2 dB
+- of these 46: MWPM_corr fails on 35 (both matching decoders on 34); median g_corr 36.9 dB, below the MWPM_corr threshold at kappa = 0.4 (67.2 dB)
+- median number of detection events: deep 64, hi_correct 49, mid_fail 62, random 56; median minimum matching weight (nats): deep 159, hi_correct 120, mid_fail 156, random 138 (groups and all features: build/high_confidence/high_confidence_failures.md)
+- GNN failures accepted at kappa = 0.1, observed / predicted: (5,5) 3 / 1.2, (5,7) 18 / 1.6, (5,9) 36 / 17.8, (5,11) 78 / 14.5, (7,7) 3 / 0.8, (7,9) 11 / 1.9, (7,11) 17 / 4.6, (9,9) 16 / 0.1
+- GNN L(0.2)/L(0.4): (5,5) 0.29, (5,7) 0.34, (5,9) 0.31, (5,11) 0.31, (7,7) 0.31, (7,9) 0.30, (7,11) 0.36, (9,9) 1.17
 
 ## Appendix E: local slopes (Fig. 8) and alpha vs p (Fig. 9)
 
